@@ -21,3 +21,220 @@ binary_sensor:
     has_still_target:
       name: Still Target
       id: ${presence_still_target_id}
+
+# Tuning entities below follow the ESPHome LD2410 docs so that existing
+# calibration guides (ESPHome, Apollo MSR-1/MSR-2) apply directly.
+# Per-gate energy sensors only report while Engineering Mode is on.
+sensor:
+  - platform: ld2410
+    ld2410_id: ${presence_ld2410_id}
+    moving_distance:
+      name: Moving Distance
+      entity_category: diagnostic
+    still_distance:
+      name: Still Distance
+      entity_category: diagnostic
+    moving_energy:
+      name: Move Energy
+      entity_category: diagnostic
+    still_energy:
+      name: Still Energy
+      entity_category: diagnostic
+    detection_distance:
+      name: Detection Distance
+      entity_category: diagnostic
+    light:
+      name: Light
+      entity_category: diagnostic
+    g0:
+      move_energy:
+        name: G0 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G0 Still Energy
+        entity_category: diagnostic
+    g1:
+      move_energy:
+        name: G1 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G1 Still Energy
+        entity_category: diagnostic
+    g2:
+      move_energy:
+        name: G2 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G2 Still Energy
+        entity_category: diagnostic
+    g3:
+      move_energy:
+        name: G3 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G3 Still Energy
+        entity_category: diagnostic
+    g4:
+      move_energy:
+        name: G4 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G4 Still Energy
+        entity_category: diagnostic
+    g5:
+      move_energy:
+        name: G5 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G5 Still Energy
+        entity_category: diagnostic
+    g6:
+      move_energy:
+        name: G6 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G6 Still Energy
+        entity_category: diagnostic
+    g7:
+      move_energy:
+        name: G7 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G7 Still Energy
+        entity_category: diagnostic
+    g8:
+      move_energy:
+        name: G8 Move Energy
+        entity_category: diagnostic
+      still_energy:
+        name: G8 Still Energy
+        entity_category: diagnostic
+
+number:
+  - platform: ld2410
+    ld2410_id: ${presence_ld2410_id}
+    timeout:
+      name: Timeout
+      entity_category: config
+    max_move_distance_gate:
+      name: Max Move Distance Gate
+      entity_category: config
+    max_still_distance_gate:
+      name: Max Still Distance Gate
+      entity_category: config
+    light_threshold:
+      name: Light Threshold
+      entity_category: config
+    g0:
+      move_threshold:
+        name: G0 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G0 Still Threshold
+        entity_category: config
+    g1:
+      move_threshold:
+        name: G1 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G1 Still Threshold
+        entity_category: config
+    g2:
+      move_threshold:
+        name: G2 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G2 Still Threshold
+        entity_category: config
+    g3:
+      move_threshold:
+        name: G3 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G3 Still Threshold
+        entity_category: config
+    g4:
+      move_threshold:
+        name: G4 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G4 Still Threshold
+        entity_category: config
+    g5:
+      move_threshold:
+        name: G5 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G5 Still Threshold
+        entity_category: config
+    g6:
+      move_threshold:
+        name: G6 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G6 Still Threshold
+        entity_category: config
+    g7:
+      move_threshold:
+        name: G7 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G7 Still Threshold
+        entity_category: config
+    g8:
+      move_threshold:
+        name: G8 Move Threshold
+        entity_category: config
+      still_threshold:
+        name: G8 Still Threshold
+        entity_category: config
+
+switch:
+  - platform: ld2410
+    ld2410_id: ${presence_ld2410_id}
+    engineering_mode:
+      name: Engineering Mode
+      entity_category: config
+    bluetooth:
+      name: Radar Bluetooth
+      entity_category: config
+
+select:
+  - platform: ld2410
+    ld2410_id: ${presence_ld2410_id}
+    distance_resolution:
+      name: Distance Resolution
+      entity_category: config
+    light_function:
+      name: Light Function
+      entity_category: config
+    out_pin_level:
+      name: Out Pin Level
+      entity_category: config
+    # baud_rate intentionally omitted: changing it breaks the UART link until
+    # the firmware is rebuilt with a matching uart baud_rate.
+
+# Prefixed "Radar" to avoid colliding with the device-level Factory Reset and
+# Restart buttons from diagnostics.yaml.
+button:
+  - platform: ld2410
+    ld2410_id: ${presence_ld2410_id}
+    factory_reset:
+      name: Radar Factory Reset
+      entity_category: diagnostic
+    restart:
+      name: Radar Restart
+      entity_category: diagnostic
+    query_params:
+      name: Radar Query Params
+      entity_category: diagnostic
+
+text_sensor:
+  - platform: ld2410
+    ld2410_id: ${presence_ld2410_id}
+    version:
+      name: Radar Firmware Version
+      entity_category: diagnostic
+    mac_address:
+      name: Radar MAC Address
+      entity_category: diagnostic
