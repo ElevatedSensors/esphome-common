@@ -1,0 +1,54 @@
+substitutions:
+  wifi_reset_id: wifi_reset_button
+  wifi_reset_name: Reset WiFi
+  wifi_configure_action: configure_wifi
+
+# Runtime WiFi management for devices that are provisioned by the user
+# (captive portal / Improv) rather than having an SSID compiled in.
+#
+# IMPORTANT: The Reset WiFi button assumes the device YAML has NO `wifi.ssid`.
+# ESPHome keys the saved-credential blob off a constant (88491487) only in that
+# case; with a compiled-in SSID the key is derived from the config hash and the
+# erase below becomes a harmless no-op.
+
+esphome:
+  build_flags:
+    - "-include nvs.h" # Exposes the ESP-IDF NVS API to the lambda below
+
+button:
+  - platform: template
+    name: ${wifi_reset_name}
+    id: ${wifi_reset_id}
+    entity_category: diagnostic
+    icon: mdi:wifi-remove
+    on_press:
+      - lambda: |-
+          // ESPHome stores user-provisioned STA credentials as a single blob in
+          // the "esphome" NVS namespace. Without a compiled-in SSID the key is the
+          // constant 88491487; fast-connect (+1) and DHCP lease cache (+2) live
+          // alongside it. Erasing just these three and rebooting drops the device
+          // straight into the AP + captive portal while leaving every other saved
+          // preference (switch states, LED state, etc.) intact.
+          nvs_handle_t handle;
+          if (nvs_open("esphome", NVS_READWRITE, &handle) == ESP_OK) {
+            nvs_erase_key(handle, "88491487");
+            nvs_erase_key(handle, "88491488");
+            nvs_erase_key(handle, "88491489");
+            nvs_commit(handle);
+            nvs_close(handle);
+          }
+          App.safe_reboot();
+
+api:
+  actions:
+    # Exposed in Home Assistant as esphome.<device>_configure_wifi for advanced
+    # users who want to move the device to a new network without re-provisioning.
+    - action: ${wifi_configure_action}
+      variables:
+        ssid: string
+        password: string
+      then:
+        - wifi.configure:
+            ssid: !lambda return ssid;
+            password: !lambda return password;
+            save: true
