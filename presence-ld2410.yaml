@@ -11,6 +11,7 @@ ld2410:
 
 binary_sensor:
   - platform: ld2410
+    ld2410_id: ${presence_ld2410_id}
     has_target:
       name: Presence
       id: ${presence_presence_id}
