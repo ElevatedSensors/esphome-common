@@ -10,7 +10,7 @@ light:
     name: ${led_name}
     id: ${led_id}
     channel_colors: ${led_channel_colors}
-    pin: ${status_led_pin}
+    pin: ${led_data_pin}
     num_leds: 3
     chipset: WS2812
     restore_mode: RESTORE_DEFAULT_OFF
