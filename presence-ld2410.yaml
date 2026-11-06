@@ -6,8 +6,8 @@ substitutions:
   presence_still_target_id: ld2410_still_target
 
 ld2410:
-  id: ${ld2410_hub_id}
-  uart_id: ${ld2410_uart_id}
+  id: ${presence_ld2410_id}
+  uart_id: ${presence_uart_id}
 
 binary_sensor:
   - platform: ld2410
