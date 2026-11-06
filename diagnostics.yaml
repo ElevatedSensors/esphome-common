@@ -29,8 +29,9 @@ binary_sensor:
 
 button:
   - platform: factory_reset
+    name: Factory Reset
     id: ${factory_reset_id}
-    internal: true
+    entity_category: diagnostic
 
   - platform: restart
     name: Restart

@@ -1,0 +1,17 @@
+substitutions:
+  led_data_pin: GPIO10
+  led_id: led
+  led_name: LED
+  led_channel_colors: GRB
+  led_default_transition_length: 1s
+
+light:
+  - platform: esp32_rmt_led_strip
+    name: ${led_name}
+    id: ${led_id}
+    channel_colors: ${led_channel_colors}
+    pin: ${status_led_pin}
+    num_leds: 3
+    chipset: WS2812
+    restore_mode: RESTORE_DEFAULT_OFF
+    default_transition_length: ${led_default_transition_length}

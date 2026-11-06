@@ -1,0 +1,60 @@
+substitutions:
+  usb_c_power_switch_id: usb_c_power
+  usb_c_power_switch_name: USB-C Power
+  usb_c_power_cc1_detect_pin: GPIO0
+  usb_c_power_cc2_detect_pin: GPIO1
+  usb_c_power_enable_pin: GPIO21
+  usb_c_power_active_low: false
+
+sensor:
+  - platform: adc
+    pin: ${usb_c_power_cc1_detect_pin}
+    id: CC1_DETECT
+    attenuation: 12db
+    internal: true
+    update_interval: 100ms
+    filters:
+      - sliding_window_moving_average:
+          window_size: 3
+          send_every: 1
+  - platform: adc
+    pin: ${usb_c_power_cc2_detect_pin}
+    id: CC2_DETECT
+    attenuation: 12db
+    internal: true
+    update_interval: 100ms
+    filters:
+      - sliding_window_moving_average:
+          window_size: 3
+          send_every: 1
+
+output:
+  - platform: gpio
+    pin: ${usb_c_power_enable_pin}
+    id: usb_c_power_output
+    inverted: ${usb_c_power_active_low}
+    restore_mode: ALWAYS_OFF
+
+switch:
+  - platform: template
+    name: ${usb_c_power_switch_name}
+    id: ${usb_c_power_switch_id}
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+interval:
+  - interval: 100ms
+    id: usb_device_detection_interval
+    then:
+      - lambda: |-
+          float v_cc1 = id(CC1_DETECT).has_state() ? id(CC1_DETECT).state : 3.3;
+          float v_cc2 = id(CC2_DETECT).has_state() ? id(CC2_DETECT).state : 3.3;
+
+          bool device_detected = (v_cc1 < 2.0 || v_cc2 < 2.0);
+          bool power_allowed = id(${usb_c_power_switch_id}).state;
+
+          if (power_allowed && device_detected) {
+            id(usb_c_power_output).turn_on();
+          } else {
+            id(usb_c_power_output).turn_off();
+          }

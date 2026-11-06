@@ -1,0 +1,28 @@
+substitutions:
+  ambient_light_i2c_bus_id: i2c_0
+  ambient_light_i2c_address: 0x29
+  ambient_light_id: ambient_light
+  ambient_light_name: Ambient Light
+  ambient_light_glass_attenuation_factor: 1
+sensor:
+  - platform: ltr_als_ps
+    i2c_id: ${ambient_light_i2c_bus_id}
+    address: ${ambient_light_i2c_address}
+    type: ALS
+    glass_attenuation_factor: ${ambient_light_glass_attenuation_factor}
+    auto_mode: false
+    gain: 48X
+    integration_time: 400ms
+    update_interval: 5s
+    ambient_light:
+      name: ${ambient_light_name}
+      id: ${ambient_light_id}
+      #filters:
+      #  - delta: 5%
+      #  - heartbeat: 180s
+#        - lambda: |-
+#            if (id(onboard_led).current_values.is_on()) {
+#              return NAN; // Display 'Unknown' when onboard LED is on
+#            } else {
+#              return x;
+#            }
