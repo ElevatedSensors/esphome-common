@@ -13,10 +13,10 @@ binary_sensor:
   - platform: ld2410
     has_target:
       name: Presence
-      id: ${ld2410_presence_id}
+      id: ${presence_presence_id}
     has_moving_target:
       name: Moving Target
-      id: ${ld2410_moving_target_id}
+      id: ${presence_moving_target_id}
     has_still_target:
       name: Still Target
-      id: ${ld2410_still_target_id}
+      id: ${presence_still_target_id}
