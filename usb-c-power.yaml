@@ -33,7 +33,6 @@ output:
     pin: ${usb_c_power_enable_pin}
     id: usb_c_power_output
     inverted: ${usb_c_power_active_low}
-    restore_mode: ALWAYS_OFF
 
 switch:
   - platform: template
