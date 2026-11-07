@@ -1,14 +1,8 @@
 substitutions:
-  usb_c_power_switch_id: usb_c_power
-  usb_c_power_switch_name: USB-C Power
   usb_c_power_cc1_detect_pin: GPIO0
   usb_c_power_cc2_detect_pin: GPIO1
   usb_c_power_enable_pin: GPIO21
   usb_c_power_active_low: false
-  usb_c_power_device_connected_id: usb_c_device_connected
-  usb_c_power_device_connected_name: USB Device Connected
-  usb_c_power_output_active_id: usb_c_power_output_active
-  usb_c_power_output_active_name: USB Power Output
 
 sensor:
   - platform: adc
@@ -38,26 +32,6 @@ output:
     id: usb_c_power_output
     inverted: ${usb_c_power_active_low}
 
-switch:
-  - platform: template
-    name: ${usb_c_power_switch_name}
-    id: ${usb_c_power_switch_id}
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_ON
-
-binary_sensor:
-  # Template sensors only publish on state change, so updating them from the
-  # 100ms interval below does not flood Home Assistant.
-  - platform: template
-    name: ${usb_c_power_device_connected_name}
-    id: ${usb_c_power_device_connected_id}
-    device_class: plug
-
-  - platform: template
-    name: ${usb_c_power_output_active_name}
-    id: ${usb_c_power_output_active_id}
-    device_class: power
-
 interval:
   - interval: 100ms
     id: usb_device_detection_interval
@@ -66,15 +40,8 @@ interval:
           float v_cc1 = id(CC1_DETECT).has_state() ? id(CC1_DETECT).state : 3.3;
           float v_cc2 = id(CC2_DETECT).has_state() ? id(CC2_DETECT).state : 3.3;
 
-          bool device_detected = (v_cc1 < 2.0 || v_cc2 < 2.0);
-          bool power_allowed = id(${usb_c_power_switch_id}).state;
-          bool output_active = power_allowed && device_detected;
-
-          if (output_active) {
+          if (v_cc1 < 2.0 || v_cc2 < 2.0) {
             id(usb_c_power_output).turn_on();
           } else {
             id(usb_c_power_output).turn_off();
           }
-
-          id(${usb_c_power_device_connected_id}).publish_state(device_detected);
-          id(${usb_c_power_output_active_id}).publish_state(output_active);
