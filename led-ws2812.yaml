@@ -3,7 +3,7 @@ substitutions:
   led_id: led
   led_name: LED
   led_channel_colors: GRB
-  led_default_transition_length: 1s
+  led_default_transition_length: 750ms
 
 light:
   - platform: esp32_rmt_led_strip
@@ -13,5 +13,43 @@ light:
     pin: ${led_data_pin}
     num_leds: 3
     chipset: WS2812
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_state: all
     default_transition_length: ${led_default_transition_length}
+    effects:
+      - pulse:
+          name: Pulse Slow
+          transition_length: 1.5s
+          update_interval: 1.5s
+      - pulse:
+          name: Pulse Medium
+          transition_length: 1s
+          update_interval: 1s
+      - pulse:
+          name: Pulse Fast
+          transition_length: 500ms
+          update_interval: 500ms
+      - pulse:
+          name: Breathe
+          transition_length: 1.5s
+          update_interval: 1.5s
+          min_brightness: 50%
+      - pulse:
+          name: Strobe
+          transition_length: 0s
+          update_interval: 500ms
+      - flicker:
+          name: Flicker
+          alpha: 95%
+          intensity: 3%
+      - random:
+          name: Random Slow
+          transition_length: 5s
+          update_interval: 7s
+      - random:
+          name: Random Medium
+          transition_length: 2.5s
+          update_interval: 3.5s
+      - random:
+          name: Random Fast
+          transition_length: 1s
+          update_interval: 1s
