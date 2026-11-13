@@ -2,6 +2,7 @@ substitutions:
   led_status_brightness: 100%
 
 script:
+  # Single white pulse when device boots
   - id: led_boot
     mode: single
     then:
@@ -14,6 +15,19 @@ script:
       - light.turn_off:
           id: ${led_id}
           transition_length: 2s
+
+  # Set LED to purple when OTA starts
+  # Call loop() to ensure color is set since main loop is blocked
+  - id: led_ota
+    mode: single
+    then:
+      - light.turn_on:
+          id: ${led_id}
+          color: purple
+          brightness: ${led_status_brightness}
+          transition_length: 0s
+      - lambda: |-
+          id(${led_id}).loop();
 
 esphome:
   # After the LED is initialized, before Wi-Fi starts.
