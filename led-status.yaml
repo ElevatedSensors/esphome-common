@@ -1,0 +1,23 @@
+substitutions:
+  led_status_brightness: 100%
+
+script:
+  - id: led_boot
+    mode: single
+    then:
+      - light.turn_on:
+          id: ${led_id}
+          color: white
+          brightness: ${led_status_brightness}
+          transition_length: 2s
+      - delay: 2s
+      - light.turn_off:
+          id: ${led_id}
+          transition_length: 2s
+
+esphome:
+  # After the LED is initialized, before Wi-Fi starts.
+  on_boot:
+    - priority: 600
+      then:
+        - script.execute: led_boot
