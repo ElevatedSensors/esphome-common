@@ -13,8 +13,6 @@ light:
     pin: ${led_data_pin}
     num_leds: 3
     chipset: WS2812
-    initial_state:
-      state: off
     default_transition_length: ${led_default_transition_length}
     effects:
       - pulse:
